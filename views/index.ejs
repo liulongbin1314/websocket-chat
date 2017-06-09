@@ -15,7 +15,7 @@
 
     <fieldset>
         <legend>消息编辑区：</legend>
-        <form>
+        <form id="form">
             <div class="form-group">
                 <label for="txtname">昵称：</label>
                 <input type="text" placeholder="请输入昵称" id="txtname" class="form-control" maxlength="10" required>
@@ -24,7 +24,7 @@
                 <label for="txtmessage">消息：</label>
                 <textarea rows="4" placeholder="请输入要发送的消息" id="txtmessage" class="form-control" maxlength="200" required></textarea>
             </div>
-            <input type="button" value="发送消息" class="btn btn-primary pull-right">
+            <input type="submit" value="发送消息" id="btnsubmit" class="btn btn-primary pull-right">
         </form>
     </fieldset>
 
@@ -42,10 +42,32 @@
             }
             ws.onmessage = function(msgEvent) {
                 var msgObj = JSON.parse(msgEvent.data);
-                console.log(msgObj);
+                // 刷新当前在线人数
                 $('#wscount').text(msgObj.wsCount);
+                // 拼接消息列表
                 $('#msglist').prepend('<li class="list-group-item"><span class="badge">' + msgObj.timestamp + '</span><strong style="color:' + (msgObj.type === 1 ? 'red' : '') + ';">' + msgObj.username + '：</strong>' + msgObj.msg + '</li>');
             }
+
+            // 当触发表单的 submit 事件时候，向服务器发送消息
+            $('#form').on('submit', function(e) {
+                e.preventDefault();
+                // 发送消息
+                ws.send(JSON.stringify({
+                    username: $('#txtname').val().trim(),
+                    message: $('#txtmessage').val().trim()
+                }));
+                // 如果消息发送成功，则清空消息框
+                $('#txtmessage').val('');
+            });
+
+            // 响应 回车键 的事件
+            $(document).on('keyup', function(e) {
+                // 当用户在按下 ctrl 键，同时抬起 enter 键的时候，才提交表单
+                if (e.keyCode === 13 && e.ctrlKey) {
+                    // 触发 提交按钮 的 点击事件
+                    $('#btnsubmit').trigger('click');
+                }
+            });
         });
     </script>
 </body>
