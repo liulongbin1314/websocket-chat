@@ -18,6 +18,10 @@
   },
   "homepage": "https://github.com/daidaitu1314/websocket-chat#readme",
   "dependencies": {
-    "express": "^4.15.3"
+    "bootstrap": "^3.3.7",
+    "ejs": "^2.5.6",
+    "express": "^4.15.3",
+    "jquery": "^3.2.1",
+    "ws": "^3.0.0"
   }
 }
