@@ -11,7 +11,7 @@
 
 <body style="padding:10px;">
 
-    <h1>聊天室</h1>
+    <h1>聊天室&nbsp;&nbsp;&nbsp;&nbsp;<small>当前有<span id="wscount"></span>人在线</small></h1>
 
     <fieldset>
         <legend>消息编辑区：</legend>
@@ -24,11 +24,30 @@
                 <label for="txtmessage">消息：</label>
                 <textarea rows="4" placeholder="请输入要发送的消息" id="txtmessage" class="form-control" maxlength="200" required></textarea>
             </div>
+            <input type="button" value="发送消息" class="btn btn-primary pull-right">
         </form>
     </fieldset>
 
-    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+    <fieldset>
+        <legend>消息列表：</legend>
+        <ul class="list-group" id="msglist"></ul>
+    </fieldset>
 
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+    <script>
+        $(function() {
+            var ws = new WebSocket('ws://127.0.0.1:3000');
+            ws.onopen = function() {
+                console.log('连接服务器成功！');
+            }
+            ws.onmessage = function(msgEvent) {
+                var msgObj = JSON.parse(msgEvent.data);
+                console.log(msgObj);
+                $('#wscount').text(msgObj.wsCount);
+                $('#msglist').prepend('<li class="list-group-item"><span class="badge">' + msgObj.timestamp + '</span><strong style="color:' + (msgObj.type === 1 ? 'red' : '') + ';">' + msgObj.username + '：</strong>' + msgObj.msg + '</li>');
+            }
+        });
+    </script>
 </body>
 
 </html>
