@@ -44,7 +44,7 @@ wss.on('connection', function(ws, req) {
     });
 
     // websocket 关闭时候的事件
-    ws.on('close', function(ws) {
+    ws.on('close', function() {
         // 让当前的在线人数 -1
         wsCount--;
         // 通知下线消息
